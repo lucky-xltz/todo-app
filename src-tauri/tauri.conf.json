@@ -1,7 +1,7 @@
 {
   "productName": "Todo App",
   "version": "0.1.0",
-  "identifier": "com.todo.app",
+  "identifier": "com.todoapp.desktop",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:5173",
