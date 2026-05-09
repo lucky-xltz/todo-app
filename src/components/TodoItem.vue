@@ -35,14 +35,14 @@
         class="action-btn edit"
         title="编辑"
       >
-        <Icon name="edit" :size="16" />
+        <Icon name="edit" :size="16" color="var(--accent-primary)" />
       </button>
       <button
         @click.stop="store.removeTodo(todo.id)"
         class="action-btn delete"
         title="删除"
       >
-        <Icon name="delete" :size="16" />
+        <Icon name="delete" :size="16" color="var(--priority-high)" />
       </button>
     </div>
 

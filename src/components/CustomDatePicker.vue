@@ -14,11 +14,11 @@
       <div v-if="isOpen" ref="dropdownRef" class="date-dropdown" :class="{ 'drop-up': dropUp }">
         <div class="calendar-header">
           <button class="nav-btn" @click="prevMonth">
-            <Icon name="chevron-left" :size="18" />
+            <Icon name="chevron-left" :size="18" color="var(--text-primary)" />
           </button>
           <span class="current-month">{{ currentMonthYear }}</span>
           <button class="nav-btn" @click="nextMonth">
-            <Icon name="chevron-right" :size="18" />
+            <Icon name="chevron-right" :size="18" color="var(--text-primary)" />
           </button>
         </div>
         
