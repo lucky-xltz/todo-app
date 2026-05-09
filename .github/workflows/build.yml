@@ -24,9 +24,6 @@ jobs:
           - platform: 'macos-latest'
             args: '--target x86_64-apple-darwin'
             target: x86_64-apple-darwin
-          - platform: 'ubuntu-22.04'
-            args: ''
-            target: ''
           - platform: 'windows-latest'
             args: ''
             target: ''
@@ -54,12 +51,6 @@ jobs:
       - name: Install frontend dependencies
         run: npm install
 
-      - name: Install dependencies (ubuntu only)
-        if: matrix.platform == 'ubuntu-22.04'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
-
       - name: Build the app
         uses: tauri-apps/tauri-action@v0
 
@@ -81,12 +72,6 @@ jobs:
           name: macos-intel-installer
           path: src-tauri/target/release/bundle/dmg/*.dmg
 
-      - uses: actions/upload-artifact@v4
-        if: matrix.platform == 'ubuntu-22.04'
-        with:
-          name: linux-installer
-          path: src-tauri/target/release/bundle/deb/*.deb
-
   release:
     needs: build
     runs-on: ubuntu-latest
@@ -103,6 +88,5 @@ jobs:
             windows-installer/*.msi
             macos-arm-installer/*.dmg
             macos-intel-installer/*.dmg
-            linux-installer/*.deb
           draft: true
           generate_release_notes: true
