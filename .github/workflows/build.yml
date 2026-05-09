@@ -78,5 +78,5 @@ jobs:
           files: |
             windows-installer/*.exe
             macos-installer/*.dmg
-          draft: true
+          draft: false
           generate_release_notes: true
