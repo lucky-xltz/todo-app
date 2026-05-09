@@ -1,5 +1,5 @@
 <template>
-  <div class="custom-date-picker" :class="{ open: isOpen }">
+  <div class="custom-date-picker" ref="pickerRef" :class="{ open: isOpen }">
     <div class="date-display" @click="togglePicker">
       <Icon name="calendar" :size="18" color="var(--text-secondary)" />
       <span class="date-text" :class="{ placeholder: !modelValue }">
@@ -11,7 +11,7 @@
     </div>
     
     <Transition name="dropdown">
-      <div v-if="isOpen" class="date-dropdown">
+      <div v-if="isOpen" ref="dropdownRef" class="date-dropdown" :class="{ 'drop-up': dropUp }">
         <div class="calendar-header">
           <button class="nav-btn" @click="prevMonth">
             <Icon name="chevron-left" :size="18" />
@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import Icon from './Icon.vue'
 
 const props = defineProps<{
@@ -65,7 +65,10 @@ const emit = defineEmits<{
   'update:modelValue': [value: string]
 }>()
 
+const pickerRef = ref<HTMLElement>()
+const dropdownRef = ref<HTMLElement>()
 const isOpen = ref(false)
+const dropUp = ref(false)
 const currentDate = ref(new Date())
 
 const weekdays = ['日', '一', '二', '三', '四', '五', '六']
@@ -116,8 +119,26 @@ const calendarDays = computed(() => {
   return days
 })
 
+const checkPosition = () => {
+  if (!pickerRef.value) return
+  
+  const rect = pickerRef.value.getBoundingClientRect()
+  const viewportHeight = window.innerHeight
+  const dropdownHeight = 350 // 预估下拉框高度
+  const spaceBelow = viewportHeight - rect.bottom
+  const spaceAbove = rect.top
+  
+  // 如果下方空间不足，且上方空间更充足，则向上弹出
+  dropUp.value = spaceBelow < dropdownHeight && spaceAbove > spaceBelow
+}
+
 const togglePicker = () => {
   isOpen.value = !isOpen.value
+  if (isOpen.value) {
+    nextTick(() => {
+      checkPosition()
+    })
+  }
 }
 
 const prevMonth = () => {
@@ -153,12 +174,23 @@ const handleClickOutside = (e: MouseEvent) => {
   }
 }
 
+// 监听滚动和resize事件
+const handleScroll = () => {
+  if (isOpen.value) {
+    checkPosition()
+  }
+}
+
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
+  window.addEventListener('scroll', handleScroll, true)
+  window.addEventListener('resize', handleScroll)
 })
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
+  window.removeEventListener('scroll', handleScroll, true)
+  window.removeEventListener('resize', handleScroll)
 })
 </script>
 
@@ -211,7 +243,6 @@ onUnmounted(() => {
 
 .date-dropdown {
   position: absolute;
-  top: calc(100% + 8px);
   left: 0;
   right: 0;
   background: var(--bg-secondary);
@@ -219,6 +250,14 @@ onUnmounted(() => {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
   padding: 16px;
   z-index: 100;
+  /* 默认向下弹出 */
+  top: calc(100% + 8px);
+}
+
+/* 向上弹出 */
+.date-dropdown.drop-up {
+  top: auto;
+  bottom: calc(100% + 8px);
 }
 
 .calendar-header {
@@ -405,11 +444,43 @@ onUnmounted(() => {
   }
 }
 
+/* 向上弹出时的动画 */
+.drop-up.dropdown-enter-active {
+  animation: dropdownUpIn 0.3s ease;
+}
+
+.drop-up.dropdown-leave-active {
+  animation: dropdownUpOut 0.2s ease;
+}
+
+@keyframes dropdownUpIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes dropdownUpOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+}
+
 /* 响应式 */
 @media (max-width: 480px) {
-  .date-dropdown {
+  .date-dropdown,
+  .date-dropdown.drop-up {
     position: fixed;
-    top: auto;
+    top: auto !important;
     bottom: 0;
     left: 0;
     right: 0;

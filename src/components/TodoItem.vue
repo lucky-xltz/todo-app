@@ -319,13 +319,9 @@ const saveEdit = () => {
 .todo-actions {
   display: flex;
   gap: 6px;
-  opacity: 0;
+  opacity: 1;
   transition: opacity 0.2s ease;
   flex-shrink: 0;
-}
-
-.todo-item:hover .todo-actions {
-  opacity: 1;
 }
 
 .action-btn {
