@@ -109,8 +109,10 @@ const getPriorityLabel = (priority: Todo['priority']) => {
   return labels[priority]
 }
 
-const formatDate = (date: Date) => {
-  const d = new Date(date)
+const formatDate = (date: Date | string) => {
+  if (!date) return ''
+  const d = date instanceof Date ? date : new Date(date)
+  if (isNaN(d.getTime())) return ''
   const month = d.getMonth() + 1
   const day = d.getDate()
   return `${month}月${day}日`

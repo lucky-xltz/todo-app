@@ -279,13 +279,29 @@ const handleSubmit = () => {
   border-radius: 8px;
   font-size: 14px;
   color: var(--text-primary);
-  box-shadow: var(--shadow-outset-sm);
+  box-shadow: var(--shadow-inset);
   cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
 }
 
 .date-input:focus {
   outline: none;
-  box-shadow: var(--shadow-outset-sm), 0 0 0 2px var(--accent-primary);
+  box-shadow: var(--shadow-inset), 0 0 0 2px var(--accent-primary);
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+  opacity: 0.6;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.date-input::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  background: var(--bg-secondary);
 }
 
 .toggle-options {

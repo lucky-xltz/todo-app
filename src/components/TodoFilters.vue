@@ -169,14 +169,27 @@ const filters = computed(() => [
   border-radius: 10px;
   font-size: 14px;
   color: var(--text-primary);
-  box-shadow: var(--shadow-outset-sm);
+  box-shadow: var(--shadow-inset);
   cursor: pointer;
   transition: all 0.2s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23636e72' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 36px;
 }
 
 .sort-select:focus {
   outline: none;
-  box-shadow: var(--shadow-outset-sm), 0 0 0 2px var(--accent-primary);
+  box-shadow: var(--shadow-inset), 0 0 0 2px var(--accent-primary);
+}
+
+.sort-select option {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  padding: 8px;
 }
 
 .actions-bar {
