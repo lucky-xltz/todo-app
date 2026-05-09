@@ -2,7 +2,7 @@
   <div class="todo-filters">
     <div class="search-box">
       <span class="search-icon">
-        <Icon name="search" :size="18" color="var(--text-secondary)" />
+        <Icon name="search" :size="16" color="var(--text-secondary)" />
       </span>
       <input
         v-model="store.searchQuery"
@@ -25,14 +25,10 @@
         </button>
       </div>
       
-      <div class="sort-selector">
-        <select v-model="store.sort" class="sort-select">
-          <option value="newest">最新</option>
-          <option value="oldest">最早</option>
-          <option value="priority">优先级</option>
-          <option value="dueDate">截止日期</option>
-        </select>
-      </div>
+      <CustomSelect
+        v-model="store.sort"
+        :options="sortOptions"
+      />
     </div>
     
     <div class="actions-bar" v-if="store.stats.completed > 0">
@@ -47,6 +43,7 @@
 import { computed } from 'vue'
 import { useTodoStore } from '../stores/todo'
 import Icon from './Icon.vue'
+import CustomSelect from './CustomSelect.vue'
 
 const store = useTodoStore()
 
@@ -55,25 +52,32 @@ const filters = computed(() => [
   { value: 'active' as const, label: '待办', count: store.stats.active },
   { value: 'completed' as const, label: '完成', count: store.stats.completed }
 ])
+
+const sortOptions = [
+  { value: 'newest', label: '最新' },
+  { value: 'oldest', label: '最早' },
+  { value: 'priority', label: '优先级' },
+  { value: 'dueDate', label: '截止日期' }
+]
 </script>
 
 <style scoped>
 .todo-filters {
   background: var(--bg-secondary);
-  border-radius: 20px;
-  padding: 20px 24px;
-  margin-bottom: 24px;
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin-bottom: 18px;
   box-shadow: var(--shadow-outset);
 }
 
 .search-box {
   position: relative;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .search-icon {
   position: absolute;
-  left: 16px;
+  left: 14px;
   top: 50%;
   transform: translateY(-50%);
   display: flex;
@@ -82,11 +86,11 @@ const filters = computed(() => [
 
 .search-input {
   width: 100%;
-  padding: 14px 16px 14px 44px;
+  padding: 12px 14px 12px 40px;
   background: var(--bg-primary);
   border: none;
-  border-radius: 12px;
-  font-size: 14px;
+  border-radius: 10px;
+  font-size: 13px;
   color: var(--text-primary);
   box-shadow: var(--shadow-inset);
   transition: all 0.3s ease;
@@ -105,21 +109,21 @@ const filters = computed(() => [
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .filter-buttons {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
 .filter-btn {
-  padding: 10px 18px;
+  padding: 8px 14px;
   background: var(--bg-primary);
   border: none;
-  border-radius: 10px;
-  font-size: 14px;
+  border-radius: 8px;
+  font-size: 13px;
   color: var(--text-secondary);
   cursor: pointer;
   box-shadow: var(--shadow-outset-sm);
@@ -142,8 +146,8 @@ const filters = computed(() => [
 }
 
 .filter-count {
-  font-size: 11px;
-  padding: 2px 6px;
+  font-size: 10px;
+  padding: 2px 5px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 4px;
   font-weight: 600;
@@ -153,52 +157,18 @@ const filters = computed(() => [
   background: var(--bg-secondary);
 }
 
-.sort-selector {
-  flex-shrink: 0;
-}
-
-.sort-select {
-  padding: 10px 36px 10px 16px;
-  background: var(--bg-primary);
-  border: none;
-  border-radius: 10px;
-  font-size: 14px;
-  color: var(--text-primary);
-  box-shadow: var(--shadow-inset);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  appearance: none;
-  -webkit-appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23636e72' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 16px;
-  font-weight: 500;
-}
-
-.sort-select:focus {
-  outline: none;
-  box-shadow: var(--shadow-inset), 0 0 0 2px var(--accent-primary);
-}
-
-.sort-select option {
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  padding: 8px;
-}
-
 .actions-bar {
-  margin-top: 16px;
+  margin-top: 14px;
   display: flex;
   justify-content: flex-end;
 }
 
 .clear-btn {
-  padding: 10px 20px;
+  padding: 8px 16px;
   background: transparent;
   border: none;
-  border-radius: 10px;
-  font-size: 13px;
+  border-radius: 8px;
+  font-size: 12px;
   color: var(--priority-high);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -212,14 +182,14 @@ const filters = computed(() => [
 /* 响应式布局 */
 @media (max-width: 768px) {
   .todo-filters {
-    padding: 16px 20px;
-    border-radius: 16px;
+    padding: 14px 16px;
+    border-radius: 14px;
   }
   
   .filter-row {
     flex-direction: column;
     align-items: stretch;
-    gap: 12px;
+    gap: 10px;
   }
   
   .filter-buttons {
@@ -229,34 +199,30 @@ const filters = computed(() => [
   .filter-btn {
     flex: 1;
     justify-content: center;
-    padding: 10px 12px;
-    font-size: 13px;
-  }
-  
-  .sort-select {
-    width: 100%;
+    padding: 8px 10px;
+    font-size: 12px;
   }
 }
 
 @media (max-width: 480px) {
   .todo-filters {
-    padding: 14px 16px;
-    margin-bottom: 16px;
-    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    border-radius: 12px;
   }
   
   .search-input {
-    padding: 12px 12px 12px 40px;
-    font-size: 13px;
-  }
-  
-  .filter-btn {
-    padding: 8px 10px;
+    padding: 10px 10px 10px 36px;
     font-size: 12px;
   }
   
+  .filter-btn {
+    padding: 7px 8px;
+    font-size: 11px;
+  }
+  
   .filter-count {
-    font-size: 10px;
+    font-size: 9px;
     padding: 1px 4px;
   }
 }
