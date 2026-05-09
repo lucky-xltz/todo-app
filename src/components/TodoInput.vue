@@ -24,7 +24,7 @@
         
         <div class="options-row">
           <div class="priority-selector">
-            <label>优先级：</label>
+            <label>优先级</label>
             <div class="priority-buttons">
               <button
                 v-for="p in priorities"
@@ -39,12 +39,8 @@
           </div>
           
           <div class="due-date">
-            <label>截止日期：</label>
-            <input
-              v-model="dueDate"
-              type="date"
-              class="date-input"
-            />
+            <label>截止日期</label>
+            <CustomDatePicker v-model="dueDate" placeholder="选择截止日期" />
           </div>
         </div>
       </div>
@@ -64,6 +60,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useTodoStore } from '../stores/todo'
+import CustomDatePicker from './CustomDatePicker.vue'
 
 const store = useTodoStore()
 
@@ -151,6 +148,7 @@ const handleSubmit = () => {
   justify-content: center;
   box-shadow: var(--shadow-outset);
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .submit-btn:hover:not(:disabled) {
@@ -215,22 +213,23 @@ const handleSubmit = () => {
 }
 
 .options-row {
-  display: flex;
-  gap: 24px;
-  align-items: flex-end;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
 .priority-selector, .due-date {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .priority-selector label, .due-date label {
-  display: block;
   font-size: 12px;
   color: var(--text-secondary);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   text-transform: uppercase;
   letter-spacing: 1px;
+  font-weight: 600;
 }
 
 .priority-buttons {
@@ -239,19 +238,22 @@ const handleSubmit = () => {
 }
 
 .priority-btn {
-  padding: 8px 16px;
+  flex: 1;
+  padding: 10px 16px;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 14px;
   cursor: pointer;
   background: var(--bg-primary);
   color: var(--text-secondary);
   box-shadow: var(--shadow-outset-sm);
   transition: all 0.2s ease;
+  font-weight: 500;
 }
 
 .priority-btn:hover {
   transform: translateY(-1px);
+  color: var(--text-primary);
 }
 
 .priority-btn.active {
@@ -271,39 +273,6 @@ const handleSubmit = () => {
   background: var(--priority-high);
 }
 
-.date-input {
-  width: 100%;
-  padding: 10px 16px;
-  background: var(--bg-primary);
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  color: var(--text-primary);
-  box-shadow: var(--shadow-inset);
-  cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
-  position: relative;
-}
-
-.date-input:focus {
-  outline: none;
-  box-shadow: var(--shadow-inset), 0 0 0 2px var(--accent-primary);
-}
-
-.date-input::-webkit-calendar-picker-indicator {
-  opacity: 0.6;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-}
-
-.date-input::-webkit-calendar-picker-indicator:hover {
-  opacity: 1;
-  background: var(--bg-secondary);
-}
-
 .toggle-options {
   background: none;
   border: none;
@@ -312,8 +281,9 @@ const handleSubmit = () => {
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 4px 0;
+  padding: 8px 0;
   transition: color 0.2s ease;
 }
 
@@ -330,10 +300,61 @@ const handleSubmit = () => {
   transform: rotate(180deg);
 }
 
+/* 响应式布局 */
 @media (max-width: 768px) {
+  .todo-input-container {
+    padding: 20px;
+    border-radius: 16px;
+  }
+  
+  .input-main {
+    gap: 10px;
+  }
+  
+  .input-field {
+    padding: 14px 16px;
+    font-size: 15px;
+  }
+  
+  .submit-btn {
+    width: 50px;
+    height: 50px;
+  }
+  
   .options-row {
-    flex-direction: column;
+    grid-template-columns: 1fr;
     gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .todo-input-container {
+    padding: 16px;
+    margin-bottom: 16px;
+    border-radius: 14px;
+  }
+  
+  .input-field {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+  
+  .submit-btn {
+    width: 46px;
+    height: 46px;
+  }
+  
+  .btn-icon {
+    font-size: 24px;
+  }
+  
+  .priority-buttons {
+    flex-direction: row;
+  }
+  
+  .priority-btn {
+    padding: 10px 12px;
+    font-size: 13px;
   }
 }
 </style>

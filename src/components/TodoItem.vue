@@ -1,16 +1,16 @@
 <template>
-  <div :class="['todo-item', { completed: todo.completed }]" @click="handleClick">
-    <div class="todo-checkbox">
+  <div :class="['todo-item', { completed: todo.completed }]">
+    <div class="todo-checkbox" @click.stop="store.toggleTodo(todo.id)">
       <input
         type="checkbox"
         :checked="todo.completed"
-        @change.stop="store.toggleTodo(todo.id)"
         class="checkbox-input"
+        readonly
       />
       <span class="checkbox-custom"></span>
     </div>
     
-    <div class="todo-content">
+    <div class="todo-content" @click="startEditing">
       <h3 class="todo-title">{{ todo.title }}</h3>
       <p v-if="todo.description" class="todo-description">{{ todo.description }}</p>
       <div class="todo-meta">
@@ -60,15 +60,21 @@
             <div class="form-row">
               <div class="form-group">
                 <label>优先级</label>
-                <select v-model="editPriority" class="form-input">
-                  <option value="low">低</option>
-                  <option value="medium">中</option>
-                  <option value="high">高</option>
-                </select>
+                <div class="priority-buttons">
+                  <button
+                    v-for="p in priorities"
+                    :key="p.value"
+                    type="button"
+                    :class="['priority-btn', p.value, { active: editPriority === p.value }]"
+                    @click="editPriority = p.value"
+                  >
+                    {{ p.label }}
+                  </button>
+                </div>
               </div>
               <div class="form-group">
                 <label>截止日期</label>
-                <input v-model="editDueDate" type="date" class="form-input" />
+                <CustomDatePicker v-model="editDueDate" placeholder="选择截止日期" />
               </div>
             </div>
             <div class="modal-actions">
@@ -86,6 +92,7 @@
 import { ref, computed } from 'vue'
 import { useTodoStore } from '../stores/todo'
 import type { Todo } from '../types/todo'
+import CustomDatePicker from './CustomDatePicker.vue'
 
 const props = defineProps<{
   todo: Todo
@@ -98,6 +105,12 @@ const editTitle = ref('')
 const editDescription = ref('')
 const editPriority = ref<Todo['priority']>('medium')
 const editDueDate = ref('')
+
+const priorities = [
+  { value: 'low' as const, label: '低' },
+  { value: 'medium' as const, label: '中' },
+  { value: 'high' as const, label: '高' }
+]
 
 const isOverdue = computed(() => {
   if (!props.todo.dueDate) return false
@@ -130,11 +143,6 @@ const formatCreatedDate = (date: Date) => {
   return formatDate(d)
 }
 
-const handleClick = () => {
-  // 点击切换完成状态
-  store.toggleTodo(props.todo.id)
-}
-
 const startEditing = () => {
   editTitle.value = props.todo.title
   editDescription.value = props.todo.description || ''
@@ -164,13 +172,12 @@ const saveEdit = () => {
 .todo-item {
   background: var(--bg-secondary);
   border-radius: 16px;
-  padding: 20px;
+  padding: 18px 20px;
   display: flex;
   align-items: flex-start;
-  gap: 16px;
+  gap: 14px;
   box-shadow: var(--shadow-outset);
   transition: all 0.3s ease;
-  cursor: pointer;
   animation: slideIn 0.3s ease;
 }
 
@@ -202,6 +209,7 @@ const saveEdit = () => {
 .todo-checkbox {
   position: relative;
   flex-shrink: 0;
+  cursor: pointer;
 }
 
 .checkbox-input {
@@ -213,12 +221,11 @@ const saveEdit = () => {
 
 .checkbox-custom {
   display: block;
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   background: var(--bg-primary);
   border-radius: 8px;
   box-shadow: var(--shadow-inset);
-  cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
 }
@@ -246,36 +253,41 @@ const saveEdit = () => {
 .todo-content {
   flex: 1;
   min-width: 0;
+  cursor: pointer;
 }
 
 .todo-title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 8px 0;
+  margin: 0 0 6px 0;
   transition: all 0.3s ease;
+  line-height: 1.4;
 }
 
 .todo-description {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-secondary);
-  margin: 0 0 12px 0;
-  line-height: 1.5;
+  margin: 0 0 10px 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .todo-meta {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
   flex-wrap: wrap;
 }
 
 .priority-badge {
-  padding: 4px 10px;
+  padding: 3px 8px;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
@@ -319,9 +331,10 @@ const saveEdit = () => {
 
 .todo-actions {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   opacity: 0;
   transition: opacity 0.2s ease;
+  flex-shrink: 0;
 }
 
 .todo-item:hover .todo-actions {
@@ -373,6 +386,7 @@ const saveEdit = () => {
   justify-content: center;
   z-index: 1000;
   animation: fadeIn 0.2s ease;
+  padding: 20px;
 }
 
 @keyframes fadeIn {
@@ -383,11 +397,13 @@ const saveEdit = () => {
 .edit-modal {
   background: var(--bg-secondary);
   border-radius: 24px;
-  padding: 32px;
-  width: 90%;
+  padding: 28px;
+  width: 100%;
   max-width: 480px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   animation: scaleIn 0.3s ease;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 @keyframes scaleIn {
@@ -408,16 +424,17 @@ const saveEdit = () => {
 }
 
 .form-group {
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 .form-group label {
   display: block;
   font-size: 12px;
   color: var(--text-secondary);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   text-transform: uppercase;
   letter-spacing: 1px;
+  font-weight: 600;
 }
 
 .form-input {
@@ -425,7 +442,7 @@ const saveEdit = () => {
   padding: 12px 16px;
   background: var(--bg-primary);
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 14px;
   color: var(--text-primary);
   box-shadow: var(--shadow-inset);
@@ -438,12 +455,49 @@ const saveEdit = () => {
 }
 
 .form-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
 
-.form-row .form-group {
+.priority-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.priority-btn {
   flex: 1;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  cursor: pointer;
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  box-shadow: var(--shadow-outset-sm);
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.priority-btn:hover {
+  color: var(--text-primary);
+}
+
+.priority-btn.active {
+  color: white;
+  box-shadow: var(--shadow-inset);
+}
+
+.priority-btn.low.active {
+  background: var(--priority-low);
+}
+
+.priority-btn.medium.active {
+  background: var(--priority-medium);
+}
+
+.priority-btn.high.active {
+  background: var(--priority-high);
 }
 
 .modal-actions {
@@ -456,7 +510,7 @@ const saveEdit = () => {
 .btn-cancel, .btn-save {
   padding: 12px 24px;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -484,14 +538,79 @@ const saveEdit = () => {
   box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
 }
 
+/* 响应式布局 */
 @media (max-width: 768px) {
+  .todo-item {
+    padding: 16px;
+    border-radius: 14px;
+    gap: 12px;
+  }
+  
   .todo-actions {
     opacity: 1;
   }
   
+  .edit-modal {
+    padding: 24px;
+    border-radius: 20px;
+  }
+  
   .form-row {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .todo-item {
+    padding: 14px;
+    gap: 10px;
+  }
+  
+  .checkbox-custom {
+    width: 22px;
+    height: 22px;
+  }
+  
+  .todo-title {
+    font-size: 14px;
+  }
+  
+  .todo-description {
+    font-size: 12px;
+  }
+  
+  .todo-meta {
+    gap: 8px;
+  }
+  
+  .priority-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+  
+  .due-date, .created-date {
+    font-size: 11px;
+  }
+  
+  .action-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+  
+  .edit-modal {
+    padding: 20px;
+    border-radius: 18px;
+  }
+  
+  .modal-actions {
     flex-direction: column;
-    gap: 16px;
+  }
+  
+  .btn-cancel, .btn-save {
+    width: 100%;
+    text-align: center;
   }
 }
 </style>

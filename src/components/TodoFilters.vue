@@ -10,7 +10,7 @@
       />
     </div>
     
-    <div class="filter-group">
+    <div class="filter-row">
       <div class="filter-buttons">
         <button
           v-for="f in filters"
@@ -24,7 +24,6 @@
       </div>
       
       <div class="sort-selector">
-        <label>排序：</label>
         <select v-model="store.sort" class="sort-select">
           <option value="newest">最新</option>
           <option value="oldest">最早</option>
@@ -34,12 +33,8 @@
       </div>
     </div>
     
-    <div class="actions-bar">
-      <button
-        v-if="store.stats.completed > 0"
-        @click="store.clearCompleted"
-        class="clear-btn"
-      >
+    <div class="actions-bar" v-if="store.stats.completed > 0">
+      <button @click="store.clearCompleted" class="clear-btn">
         清除已完成 ({{ store.stats.completed }})
       </button>
     </div>
@@ -102,7 +97,7 @@ const filters = computed(() => [
   color: var(--text-secondary);
 }
 
-.filter-group {
+.filter-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -112,10 +107,11 @@ const filters = computed(() => [
 .filter-buttons {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .filter-btn {
-  padding: 10px 20px;
+  padding: 10px 18px;
   background: var(--bg-primary);
   border: none;
   border-radius: 10px;
@@ -126,7 +122,8 @@ const filters = computed(() => [
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  font-weight: 500;
 }
 
 .filter-btn:hover {
@@ -141,10 +138,11 @@ const filters = computed(() => [
 }
 
 .filter-count {
-  font-size: 12px;
+  font-size: 11px;
   padding: 2px 6px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 4px;
+  font-weight: 600;
 }
 
 .filter-btn:not(.active) .filter-count {
@@ -152,18 +150,11 @@ const filters = computed(() => [
 }
 
 .sort-selector {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.sort-selector label {
-  font-size: 13px;
-  color: var(--text-secondary);
+  flex-shrink: 0;
 }
 
 .sort-select {
-  padding: 10px 16px;
+  padding: 10px 36px 10px 16px;
   background: var(--bg-primary);
   border: none;
   border-radius: 10px;
@@ -178,7 +169,7 @@ const filters = computed(() => [
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 16px;
-  padding-right: 36px;
+  font-weight: 500;
 }
 
 .sort-select:focus {
@@ -207,24 +198,62 @@ const filters = computed(() => [
   color: var(--priority-high);
   cursor: pointer;
   transition: all 0.2s ease;
+  font-weight: 500;
 }
 
 .clear-btn:hover {
   background: rgba(231, 76, 60, 0.1);
 }
 
+/* 响应式布局 */
 @media (max-width: 768px) {
-  .filter-group {
+  .todo-filters {
+    padding: 16px 20px;
+    border-radius: 16px;
+  }
+  
+  .filter-row {
     flex-direction: column;
     align-items: stretch;
+    gap: 12px;
   }
   
   .filter-buttons {
     justify-content: center;
   }
   
-  .sort-selector {
+  .filter-btn {
+    flex: 1;
     justify-content: center;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  
+  .sort-select {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .todo-filters {
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    border-radius: 14px;
+  }
+  
+  .search-input {
+    padding: 12px 12px 12px 40px;
+    font-size: 13px;
+  }
+  
+  .filter-btn {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+  
+  .filter-count {
+    font-size: 10px;
+    padding: 1px 4px;
   }
 }
 </style>

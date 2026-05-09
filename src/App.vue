@@ -7,7 +7,7 @@
       <TodoList />
       
       <footer class="app-footer">
-        <p>数据保存在本地浏览器中</p>
+        <p>数据保存在本地 SQLite 数据库中</p>
       </footer>
     </div>
   </div>
@@ -46,6 +46,14 @@ import TodoList from './components/TodoList.vue'
   --shadow-outset: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
   --shadow-outset-sm: 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light);
   --shadow-inset: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+  
+  /* 间距 */
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 20px;
+  --spacing-xl: 24px;
+  --spacing-2xl: 32px;
 }
 
 /* 全局样式重置 */
@@ -55,6 +63,11 @@ import TodoList from './components/TodoList.vue'
   box-sizing: border-box;
 }
 
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
   background: var(--bg-primary);
@@ -62,20 +75,22 @@ body {
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
 }
 
 /* 滚动条样式 */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-primary);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
   background: var(--shadow-dark);
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -90,7 +105,7 @@ body {
 
 .app-container {
   min-height: 100vh;
-  padding: 40px 20px;
+  padding: var(--spacing-xl) var(--spacing-md);
   background: linear-gradient(135deg, #e0e5ec 0%, #d5dbe3 100%);
 }
 
@@ -101,8 +116,8 @@ body {
 
 .app-footer {
   text-align: center;
-  padding: 24px;
-  margin-top: 24px;
+  padding: var(--spacing-lg);
+  margin-top: var(--spacing-lg);
 }
 
 .app-footer p {
@@ -110,10 +125,40 @@ body {
   color: var(--text-secondary);
 }
 
-/* 响应式调整 */
+/* 响应式断点 */
 @media (max-width: 768px) {
+  :root {
+    --shadow-outset: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+    --shadow-outset-sm: 2px 2px 4px var(--shadow-dark), -2px -2px 4px var(--shadow-light);
+    --shadow-inset: inset 2px 2px 4px var(--shadow-dark), inset -2px -2px 4px var(--shadow-light);
+  }
+  
   .app-container {
-    padding: 20px 16px;
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 14px;
+  }
+  
+  .app-container {
+    padding: var(--spacing-sm) var(--spacing-xs);
+  }
+  
+  .app-footer {
+    padding: var(--spacing-md);
+    margin-top: var(--spacing-md);
+  }
+}
+
+/* 安全区域适配（刘海屏等） */
+@supports (padding: max(0px)) {
+  .app-container {
+    padding-left: max(var(--spacing-md), env(safe-area-inset-left));
+    padding-right: max(var(--spacing-md), env(safe-area-inset-right));
+    padding-bottom: max(var(--spacing-md), env(safe-area-inset-bottom));
   }
 }
 </style>

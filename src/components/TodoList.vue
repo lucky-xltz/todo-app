@@ -60,7 +60,7 @@ const emptyDescription = computed(() => {
 .list-container {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 /* 列表动画 */
@@ -88,14 +88,14 @@ const emptyDescription = computed(() => {
 
 .empty-state {
   text-align: center;
-  padding: 60px 20px;
+  padding: 48px 24px;
   background: var(--bg-secondary);
   border-radius: 20px;
   box-shadow: var(--shadow-outset);
 }
 
 .empty-icon {
-  font-size: 64px;
+  font-size: 56px;
   margin-bottom: 16px;
   animation: float 3s ease-in-out infinite;
 }
@@ -110,7 +110,7 @@ const emptyDescription = computed(() => {
 }
 
 .empty-title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
   color: var(--text-primary);
   margin: 0 0 8px 0;
@@ -120,5 +120,49 @@ const emptyDescription = computed(() => {
   font-size: 14px;
   color: var(--text-secondary);
   margin: 0;
+}
+
+/* 响应式布局 */
+@media (max-width: 768px) {
+  .list-container {
+    gap: 12px;
+  }
+  
+  .empty-state {
+    padding: 40px 20px;
+    border-radius: 16px;
+  }
+  
+  .empty-icon {
+    font-size: 48px;
+  }
+  
+  .empty-title {
+    font-size: 16px;
+  }
+  
+  .empty-description {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .list-container {
+    gap: 10px;
+  }
+  
+  .empty-state {
+    padding: 32px 16px;
+    border-radius: 14px;
+  }
+  
+  .empty-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+  }
+  
+  .empty-title {
+    font-size: 15px;
+  }
 }
 </style>

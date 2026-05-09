@@ -78,40 +78,51 @@ const { stats } = storeToRefs(store)
 .title-icon {
   font-size: 32px;
   color: var(--accent-primary);
+  background: var(--bg-primary);
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-inset);
 }
 
 .stats {
   display: flex;
-  gap: 24px;
+  gap: 16px;
   align-items: center;
 }
 
 .stat-item {
   text-align: center;
-  padding: 8px 16px;
+  padding: 10px 16px;
   background: var(--bg-primary);
   border-radius: 12px;
   box-shadow: var(--shadow-inset);
+  min-width: 70px;
 }
 
 .stat-number {
   display: block;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--accent-primary);
+  line-height: 1.2;
 }
 
 .stat-label {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 1px;
+  margin-top: 2px;
 }
 
 .progress-ring {
   position: relative;
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
 }
 
 .progress-ring svg {
@@ -137,20 +148,87 @@ const { stats } = storeToRefs(store)
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   color: var(--text-primary);
 }
 
+/* 响应式布局 */
 @media (max-width: 768px) {
+  .todo-header {
+    padding: 20px;
+    border-radius: 16px;
+  }
+  
   .header-content {
     flex-direction: column;
     gap: 16px;
   }
-
+  
+  .app-title {
+    font-size: 24px;
+  }
+  
   .stats {
     width: 100%;
     justify-content: space-between;
+    gap: 10px;
+  }
+  
+  .stat-item {
+    flex: 1;
+    padding: 8px 10px;
+    min-width: auto;
+  }
+  
+  .stat-number {
+    font-size: 18px;
+  }
+  
+  .stat-label {
+    font-size: 10px;
+  }
+  
+  .progress-ring {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .progress-text {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .todo-header {
+    padding: 16px;
+    margin-bottom: 16px;
+    border-radius: 14px;
+  }
+  
+  .app-title {
+    font-size: 20px;
+    gap: 10px;
+  }
+  
+  .title-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+    border-radius: 12px;
+  }
+  
+  .stat-item {
+    padding: 6px 8px;
+    border-radius: 10px;
+  }
+  
+  .stat-number {
+    font-size: 16px;
+  }
+  
+  .stat-label {
+    font-size: 9px;
   }
 }
 </style>
