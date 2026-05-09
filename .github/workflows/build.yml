@@ -21,12 +21,15 @@ jobs:
           - platform: 'macos-latest'
             args: '--target aarch64-apple-darwin'
             target: aarch64-apple-darwin
+            label: macos-arm
           - platform: 'macos-latest'
             args: '--target x86_64-apple-darwin'
             target: x86_64-apple-darwin
+            label: macos-intel
           - platform: 'windows-latest'
             args: ''
             target: ''
+            label: windows
 
     runs-on: ${{ matrix.platform }}
 
@@ -54,20 +57,28 @@ jobs:
       - name: Build the app
         uses: tauri-apps/tauri-action@v0
 
+      - name: Rename macOS Intel DMG
+        if: matrix.label == 'macos-intel'
+        run: |
+          cd src-tauri/target/release/bundle/dmg
+          for f in *.dmg; do
+            mv "$f" "${f%.dmg}_x64.dmg"
+          done
+
       - uses: actions/upload-artifact@v4
-        if: matrix.platform == 'windows-latest'
+        if: matrix.label == 'windows'
         with:
           name: windows-installer
           path: src-tauri/target/release/bundle/msi/*.msi
 
       - uses: actions/upload-artifact@v4
-        if: matrix.platform == 'macos-latest' && matrix.target == 'aarch64-apple-darwin'
+        if: matrix.label == 'macos-arm'
         with:
           name: macos-arm-installer
           path: src-tauri/target/release/bundle/dmg/*.dmg
 
       - uses: actions/upload-artifact@v4
-        if: matrix.platform == 'macos-latest' && matrix.target == 'x86_64-apple-darwin'
+        if: matrix.label == 'macos-intel'
         with:
           name: macos-intel-installer
           path: src-tauri/target/release/bundle/dmg/*.dmg
