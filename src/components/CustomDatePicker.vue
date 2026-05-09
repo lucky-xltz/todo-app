@@ -1,12 +1,12 @@
 <template>
   <div class="custom-date-picker" ref="pickerRef" :class="{ open: isOpen }">
     <div class="date-display" @click="togglePicker">
-      <Icon name="calendar" :size="18" color="var(--text-secondary)" />
+      <Icon name="calendar" :size="16" color="var(--text-secondary)" />
       <span class="date-text" :class="{ placeholder: !modelValue }">
         {{ displayText }}
       </span>
       <span class="arrow" :class="{ up: isOpen }">
-        <Icon name="chevron-down" :size="14" color="var(--text-secondary)" />
+        <Icon name="chevron-down" :size="12" color="var(--text-secondary)" />
       </span>
     </div>
     
@@ -14,11 +14,11 @@
       <div v-if="isOpen" ref="dropdownRef" class="date-dropdown" :class="{ 'drop-up': dropUp }">
         <div class="calendar-header">
           <button class="nav-btn" @click="prevMonth">
-            <Icon name="chevron-left" :size="18" color="var(--text-primary)" />
+            <Icon name="chevron-left" :size="14" color="var(--text-primary)" />
           </button>
           <span class="current-month">{{ currentMonthYear }}</span>
           <button class="nav-btn" @click="nextMonth">
-            <Icon name="chevron-right" :size="18" color="var(--text-primary)" />
+            <Icon name="chevron-right" :size="14" color="var(--text-primary)" />
           </button>
         </div>
         
@@ -76,7 +76,7 @@ const weekdays = ['日', '一', '二', '三', '四', '五', '六']
 const displayText = computed(() => {
   if (!props.modelValue) return props.placeholder || '选择日期'
   const date = new Date(props.modelValue)
-  return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`
+  return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`
 })
 
 const currentMonthYear = computed(() => {
@@ -124,11 +124,10 @@ const checkPosition = () => {
   
   const rect = pickerRef.value.getBoundingClientRect()
   const viewportHeight = window.innerHeight
-  const dropdownHeight = 350 // 预估下拉框高度
+  const dropdownHeight = 300
   const spaceBelow = viewportHeight - rect.bottom
   const spaceAbove = rect.top
   
-  // 如果下方空间不足，且上方空间更充足，则向上弹出
   dropUp.value = spaceBelow < dropdownHeight && spaceAbove > spaceBelow
 }
 
@@ -166,7 +165,6 @@ const clearDate = () => {
   isOpen.value = false
 }
 
-// 点击外部关闭
 const handleClickOutside = (e: MouseEvent) => {
   const target = e.target as HTMLElement
   if (!target.closest('.custom-date-picker')) {
@@ -174,7 +172,6 @@ const handleClickOutside = (e: MouseEvent) => {
   }
 }
 
-// 监听滚动和resize事件
 const handleScroll = () => {
   if (isOpen.value) {
     checkPosition()
@@ -203,11 +200,11 @@ onUnmounted(() => {
 .date-display {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
+  gap: 8px;
+  padding: 10px 12px;
   background: var(--bg-primary);
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   box-shadow: var(--shadow-inset);
   cursor: pointer;
   transition: all 0.3s ease;
@@ -223,8 +220,11 @@ onUnmounted(() => {
 
 .date-text {
   flex: 1;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .date-text.placeholder {
@@ -235,6 +235,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   transition: transform 0.3s ease;
+  flex-shrink: 0;
 }
 
 .arrow.up {
@@ -246,33 +247,33 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   background: var(--bg-secondary);
-  border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-  padding: 16px;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  padding: 14px;
   z-index: 100;
-  /* 默认向下弹出 */
-  top: calc(100% + 8px);
+  top: calc(100% + 6px);
+  min-width: 260px;
+  max-width: 300px;
 }
 
-/* 向上弹出 */
 .date-dropdown.drop-up {
   top: auto;
-  bottom: calc(100% + 8px);
+  bottom: calc(100% + 6px);
 }
 
 .calendar-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .nav-btn {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   background: var(--bg-primary);
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
   box-shadow: var(--shadow-outset-sm);
   transition: all 0.2s ease;
@@ -291,7 +292,7 @@ onUnmounted(() => {
 }
 
 .current-month {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
 }
@@ -299,22 +300,22 @@ onUnmounted(() => {
 .weekday-row {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-  margin-bottom: 8px;
+  gap: 2px;
+  margin-bottom: 6px;
 }
 
 .weekday {
   text-align: center;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-secondary);
   font-weight: 600;
-  padding: 8px 0;
+  padding: 4px 0;
 }
 
 .days-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+  gap: 2px;
 }
 
 .day-btn {
@@ -322,8 +323,8 @@ onUnmounted(() => {
   aspect-ratio: 1;
   background: transparent;
   border: none;
-  border-radius: 10px;
-  font-size: 14px;
+  border-radius: 8px;
+  font-size: 13px;
   color: var(--text-primary);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -331,6 +332,7 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   position: relative;
+  max-height: 36px;
 }
 
 .day-btn:hover:not(:disabled):not(.selected) {
@@ -355,11 +357,11 @@ onUnmounted(() => {
 .day-btn.today::after {
   content: '';
   position: absolute;
-  bottom: 4px;
+  bottom: 3px;
   left: 50%;
   transform: translateX(-50%);
-  width: 4px;
-  height: 4px;
+  width: 3px;
+  height: 3px;
   background: var(--accent-primary);
   border-radius: 50%;
 }
@@ -377,17 +379,17 @@ onUnmounted(() => {
 .calendar-footer {
   display: flex;
   justify-content: space-between;
-  margin-top: 12px;
-  padding-top: 12px;
+  margin-top: 10px;
+  padding-top: 10px;
   border-top: 1px solid var(--shadow-dark);
 }
 
 .today-btn,
 .clear-btn {
-  padding: 8px 16px;
+  padding: 6px 14px;
   border: none;
   border-radius: 8px;
-  font-size: 13px;
+  font-size: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
   font-weight: 500;
@@ -415,17 +417,17 @@ onUnmounted(() => {
 
 /* 下拉动画 */
 .dropdown-enter-active {
-  animation: dropdownIn 0.3s ease;
+  animation: dropdownIn 0.2s ease;
 }
 
 .dropdown-leave-active {
-  animation: dropdownOut 0.2s ease;
+  animation: dropdownOut 0.15s ease;
 }
 
 @keyframes dropdownIn {
   from {
     opacity: 0;
-    transform: translateY(-10px) scale(0.95);
+    transform: translateY(-6px) scale(0.98);
   }
   to {
     opacity: 1;
@@ -440,23 +442,22 @@ onUnmounted(() => {
   }
   to {
     opacity: 0;
-    transform: translateY(-10px) scale(0.95);
+    transform: translateY(-6px) scale(0.98);
   }
 }
 
-/* 向上弹出时的动画 */
 .drop-up.dropdown-enter-active {
-  animation: dropdownUpIn 0.3s ease;
+  animation: dropdownUpIn 0.2s ease;
 }
 
 .drop-up.dropdown-leave-active {
-  animation: dropdownUpOut 0.2s ease;
+  animation: dropdownUpOut 0.15s ease;
 }
 
 @keyframes dropdownUpIn {
   from {
     opacity: 0;
-    transform: translateY(10px) scale(0.95);
+    transform: translateY(6px) scale(0.98);
   }
   to {
     opacity: 1;
@@ -471,7 +472,7 @@ onUnmounted(() => {
   }
   to {
     opacity: 0;
-    transform: translateY(10px) scale(0.95);
+    transform: translateY(6px) scale(0.98);
   }
 }
 
@@ -484,14 +485,15 @@ onUnmounted(() => {
     bottom: 0;
     left: 0;
     right: 0;
-    border-radius: 20px 20px 0 0;
-    padding: 20px;
-    max-height: 80vh;
-    overflow-y: auto;
+    border-radius: 16px 16px 0 0;
+    padding: 16px;
+    max-width: none;
+    min-width: auto;
   }
   
   .day-btn {
-    font-size: 16px;
+    font-size: 15px;
+    max-height: 42px;
   }
 }
 </style>
