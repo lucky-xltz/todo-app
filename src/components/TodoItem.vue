@@ -7,7 +7,9 @@
         class="checkbox-input"
         readonly
       />
-      <span class="checkbox-custom"></span>
+      <span class="checkbox-custom">
+        <Icon v-if="todo.completed" name="check" :size="14" color="white" />
+      </span>
     </div>
     
     <div class="todo-content" @click="startEditing">
@@ -18,6 +20,7 @@
           {{ getPriorityLabel(todo.priority) }}
         </span>
         <span v-if="todo.dueDate" class="due-date" :class="{ overdue: isOverdue }">
+          <Icon name="calendar" :size="12" />
           {{ formatDate(todo.dueDate) }}
         </span>
         <span class="created-date">
@@ -32,14 +35,14 @@
         class="action-btn edit"
         title="编辑"
       >
-        ✎
+        <Icon name="edit" :size="16" />
       </button>
       <button
         @click.stop="store.removeTodo(todo.id)"
         class="action-btn delete"
         title="删除"
       >
-        ×
+        <Icon name="delete" :size="16" />
       </button>
     </div>
 
@@ -92,6 +95,7 @@
 import { ref, computed } from 'vue'
 import { useTodoStore } from '../stores/todo'
 import type { Todo } from '../types/todo'
+import Icon from './Icon.vue'
 import CustomDatePicker from './CustomDatePicker.vue'
 
 const props = defineProps<{
@@ -228,26 +232,14 @@ const saveEdit = () => {
   box-shadow: var(--shadow-inset);
   transition: all 0.3s ease;
   position: relative;
-}
-
-.checkbox-custom::after {
-  content: '✓';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  font-size: 14px;
-  color: white;
-  transition: transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .checkbox-input:checked + .checkbox-custom {
   background: var(--accent-primary);
   box-shadow: var(--shadow-outset-sm);
-}
-
-.checkbox-input:checked + .checkbox-custom::after {
-  transform: translate(-50%, -50%) scale(1);
 }
 
 .todo-content {
@@ -314,11 +306,6 @@ const saveEdit = () => {
   gap: 4px;
 }
 
-.due-date::before {
-  content: '📅';
-  font-size: 12px;
-}
-
 .due-date.overdue {
   color: var(--priority-high);
   font-weight: 600;
@@ -350,7 +337,6 @@ const saveEdit = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
   transition: all 0.2s ease;
   background: var(--bg-primary);
   box-shadow: var(--shadow-outset-sm);
@@ -596,7 +582,6 @@ const saveEdit = () => {
   .action-btn {
     width: 28px;
     height: 28px;
-    font-size: 14px;
   }
   
   .edit-modal {

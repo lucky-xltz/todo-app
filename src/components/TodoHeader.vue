@@ -2,7 +2,9 @@
   <header class="todo-header">
     <div class="header-content">
       <h1 class="app-title">
-        <span class="title-icon">✓</span>
+        <span class="title-icon">
+          <Icon name="check" :size="28" color="white" />
+        </span>
         待办清单
       </h1>
       <div class="stats">
@@ -46,6 +48,7 @@
 <script setup lang="ts">
 import { useTodoStore } from '../stores/todo'
 import { storeToRefs } from 'pinia'
+import Icon from './Icon.vue'
 
 const store = useTodoStore()
 const { stats } = storeToRefs(store)
@@ -78,14 +81,14 @@ const { stats } = storeToRefs(store)
 .title-icon {
   font-size: 32px;
   color: var(--accent-primary);
-  background: var(--bg-primary);
+  background: var(--accent-primary);
   width: 48px;
   height: 48px;
   border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--shadow-inset);
+  box-shadow: var(--shadow-outset);
 }
 
 .stats {
@@ -214,7 +217,6 @@ const { stats } = storeToRefs(store)
   .title-icon {
     width: 40px;
     height: 40px;
-    font-size: 24px;
     border-radius: 12px;
   }
   

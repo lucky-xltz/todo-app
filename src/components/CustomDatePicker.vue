@@ -1,19 +1,25 @@
 <template>
   <div class="custom-date-picker" :class="{ open: isOpen }">
     <div class="date-display" @click="togglePicker">
-      <span class="date-icon">📅</span>
+      <Icon name="calendar" :size="18" color="var(--text-secondary)" />
       <span class="date-text" :class="{ placeholder: !modelValue }">
         {{ displayText }}
       </span>
-      <span class="arrow" :class="{ up: isOpen }">▼</span>
+      <span class="arrow" :class="{ up: isOpen }">
+        <Icon name="chevron-down" :size="14" color="var(--text-secondary)" />
+      </span>
     </div>
     
     <Transition name="dropdown">
       <div v-if="isOpen" class="date-dropdown">
         <div class="calendar-header">
-          <button class="nav-btn" @click="prevMonth">‹</button>
+          <button class="nav-btn" @click="prevMonth">
+            <Icon name="chevron-left" :size="18" />
+          </button>
           <span class="current-month">{{ currentMonthYear }}</span>
-          <button class="nav-btn" @click="nextMonth">›</button>
+          <button class="nav-btn" @click="nextMonth">
+            <Icon name="chevron-right" :size="18" />
+          </button>
         </div>
         
         <div class="weekday-row">
@@ -48,6 +54,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import Icon from './Icon.vue'
 
 const props = defineProps<{
   modelValue: string
@@ -182,11 +189,6 @@ onUnmounted(() => {
   box-shadow: var(--shadow-inset), 0 0 0 2px var(--accent-primary);
 }
 
-.date-icon {
-  font-size: 18px;
-  flex-shrink: 0;
-}
-
 .date-text {
   flex: 1;
   font-size: 14px;
@@ -198,8 +200,8 @@ onUnmounted(() => {
 }
 
 .arrow {
-  font-size: 10px;
-  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
   transition: transform 0.3s ease;
 }
 
@@ -232,8 +234,6 @@ onUnmounted(() => {
   background: var(--bg-primary);
   border: none;
   border-radius: 8px;
-  font-size: 18px;
-  color: var(--text-primary);
   cursor: pointer;
   box-shadow: var(--shadow-outset-sm);
   transition: all 0.2s ease;
@@ -291,6 +291,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .day-btn:hover:not(:disabled):not(.selected) {
@@ -330,6 +331,10 @@ onUnmounted(() => {
   box-shadow: var(--shadow-outset-sm);
 }
 
+.day-btn.selected::after {
+  display: none;
+}
+
 .calendar-footer {
   display: flex;
   justify-content: space-between;
@@ -346,6 +351,7 @@ onUnmounted(() => {
   font-size: 13px;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-weight: 500;
 }
 
 .today-btn {

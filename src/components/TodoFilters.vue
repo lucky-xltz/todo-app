@@ -1,7 +1,9 @@
 <template>
   <div class="todo-filters">
     <div class="search-box">
-      <span class="search-icon">🔍</span>
+      <span class="search-icon">
+        <Icon name="search" :size="18" color="var(--text-secondary)" />
+      </span>
       <input
         v-model="store.searchQuery"
         type="text"
@@ -44,6 +46,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useTodoStore } from '../stores/todo'
+import Icon from './Icon.vue'
 
 const store = useTodoStore()
 
@@ -73,7 +76,8 @@ const filters = computed(() => [
   left: 16px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 16px;
+  display: flex;
+  align-items: center;
 }
 
 .search-input {

@@ -9,7 +9,9 @@
     </TransitionGroup>
     
     <div v-if="store.filteredTodos.length === 0" class="empty-state">
-      <div class="empty-icon">📝</div>
+      <div class="empty-icon">
+        <Icon name="note" :size="48" color="var(--accent-primary)" />
+      </div>
       <h3 class="empty-title">{{ emptyTitle }}</h3>
       <p class="empty-description">{{ emptyDescription }}</p>
     </div>
@@ -20,6 +22,7 @@
 import { computed } from 'vue'
 import { useTodoStore } from '../stores/todo'
 import TodoItem from './TodoItem.vue'
+import Icon from './Icon.vue'
 
 const store = useTodoStore()
 
@@ -95,7 +98,6 @@ const emptyDescription = computed(() => {
 }
 
 .empty-icon {
-  font-size: 56px;
   margin-bottom: 16px;
   animation: float 3s ease-in-out infinite;
 }
@@ -133,10 +135,6 @@ const emptyDescription = computed(() => {
     border-radius: 16px;
   }
   
-  .empty-icon {
-    font-size: 48px;
-  }
-  
   .empty-title {
     font-size: 16px;
   }
@@ -154,11 +152,6 @@ const emptyDescription = computed(() => {
   .empty-state {
     padding: 32px 16px;
     border-radius: 14px;
-  }
-  
-  .empty-icon {
-    font-size: 40px;
-    margin-bottom: 12px;
   }
   
   .empty-title {
